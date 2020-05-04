@@ -67,8 +67,8 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
         } else {
             response.setMessage(e.getLocalizedMessage());
         }
-        LOG.error(e.getLocalizedMessage());
         response.setPath(((ServletWebRequest) request).getRequest().getRequestURI());
+        LOG.error("ControllerAdvisor: status: {}, object: {}, message: {}", status, response, e.getLocalizedMessage());
         return response;
     }
 

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @Api(value = "Customer Controller")
@@ -30,8 +31,9 @@ public class CustomerController {
             @ApiResponse(code = 401, message = "Unauthorized"),
             @ApiResponse(code = 409, message = "Customer already exists")})
     @PostMapping
-    public ResponseEntity<CustomerResponseModel> create(@Valid @RequestBody CustomerRequestModel request) {
-        CustomerResponseModel response = customerService.create(request);
+    public ResponseEntity<CustomerResponseModel> create(@Valid @RequestBody CustomerRequestModel request)
+            throws ExecutionException, InterruptedException {
+        CustomerResponseModel response = customerService.create(request).get();
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -41,8 +43,9 @@ public class CustomerController {
             @ApiResponse(code = 401, message = "Unauthorized"),
             @ApiResponse(code = 404, message = "Customer not found")})
     @GetMapping("/{customerId}")
-    public ResponseEntity<CustomerResponseModel> get(@PathVariable String customerId) {
-        CustomerResponseModel response = customerService.getByCustomerId(customerId);
+    public ResponseEntity<CustomerResponseModel> get(@PathVariable String customerId)
+            throws ExecutionException, InterruptedException {
+        CustomerResponseModel response = customerService.getByCustomerId(customerId).get();
         return ResponseEntity.ok(response);
     }
 
@@ -54,8 +57,9 @@ public class CustomerController {
             @ApiResponse(code = 404, message = "Customer not found")})
     @PutMapping("/{customerId}")
     public ResponseEntity<CustomerResponseModel> update(@PathVariable String customerId,
-                                                        @Valid @RequestBody CustomerRequestModel request) {
-        CustomerResponseModel response = customerService.updateByCustomerId(customerId, request);
+                                                        @Valid @RequestBody CustomerRequestModel request)
+            throws ExecutionException, InterruptedException {
+        CustomerResponseModel response = customerService.updateByCustomerId(customerId, request).get();
         return ResponseEntity.ok(response);
     }
 
@@ -74,8 +78,9 @@ public class CustomerController {
             @ApiResponse(code = 200, message = "Customer exists"),
             @ApiResponse(code = 401, message = "Unauthorized")})
     @GetMapping("/exists/{customerId}")
-    public ResponseEntity<Boolean> exists(@PathVariable String customerId) {
-        boolean isExists = customerService.existsByCustomerId(customerId);
+    public ResponseEntity<Boolean> exists(@PathVariable String customerId)
+            throws ExecutionException, InterruptedException {
+        boolean isExists = customerService.existsByCustomerId(customerId).get();
         return ResponseEntity.ok(isExists);
     }
 }

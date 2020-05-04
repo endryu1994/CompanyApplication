@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @Api(value = "Employee Controller")
@@ -30,8 +31,9 @@ public class EmployeeController {
             @ApiResponse(code = 401, message = "Unauthorized"),
             @ApiResponse(code = 409, message = "Employee already exists")})
     @PostMapping
-    public ResponseEntity<EmployeeResponseModel> create(@Valid @RequestBody EmployeeRequestModel request) {
-        EmployeeResponseModel response = employeeService.create(request);
+    public ResponseEntity<EmployeeResponseModel> create(@Valid @RequestBody EmployeeRequestModel request)
+            throws ExecutionException, InterruptedException {
+        EmployeeResponseModel response = employeeService.create(request).get();
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -41,8 +43,9 @@ public class EmployeeController {
             @ApiResponse(code = 401, message = "Unauthorized"),
             @ApiResponse(code = 404, message = "Employee not found")})
     @GetMapping("/{employeeId}")
-    public ResponseEntity<EmployeeResponseModel> get(@PathVariable String employeeId) {
-        EmployeeResponseModel response = employeeService.getByUsername(employeeId);
+    public ResponseEntity<EmployeeResponseModel> get(@PathVariable String employeeId)
+            throws ExecutionException, InterruptedException {
+        EmployeeResponseModel response = employeeService.getByUsername(employeeId).get();
         return ResponseEntity.ok(response);
     }
 
@@ -54,8 +57,9 @@ public class EmployeeController {
             @ApiResponse(code = 404, message = "Employee not found")})
     @PutMapping("/{employeeId}")
     public ResponseEntity<EmployeeResponseModel> update(@PathVariable String employeeId,
-                                                        @Valid @RequestBody EmployeeRequestModel request) {
-        EmployeeResponseModel response = employeeService.updateByUsername(employeeId, request);
+                                                        @Valid @RequestBody EmployeeRequestModel request)
+            throws ExecutionException, InterruptedException {
+        EmployeeResponseModel response = employeeService.updateByUsername(employeeId, request).get();
         return ResponseEntity.ok(response);
     }
 
