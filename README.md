@@ -13,3 +13,4 @@ The microservice-based system consists of the following modules:
 * **EmployeeService** - a module that allows to perform CRUD operations on PostgreSQL repository of employees accounts.
 
 The whole sample architecture is visible on the picture below. Each microservice has its own database as shown on the following picture.
+<div style="text-align:center"><img src="https://github.com/endryu1994/CompanyApplication/blob/master/Untitled%20Diagram.jpg"/></div>
