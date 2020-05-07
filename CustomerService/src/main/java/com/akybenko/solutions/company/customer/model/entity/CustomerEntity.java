@@ -1,6 +1,7 @@
 package com.akybenko.solutions.company.customer.model.entity;
 
 import lombok.Data;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,10 +11,18 @@ import java.io.Serializable;
 @Data
 public class CustomerEntity implements Serializable {
 
-    private static final long serialVersionUID = 6212877011075886359L;
+    private static final long serialVersionUID = -8388205419779801524L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "ID_GENERATOR")
+    @GenericGenerator(
+            name = "ID_GENERATOR",
+            strategy = "enhanced-sequence",
+            parameters = {
+                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "CUSTOMER_SEQUENCE"),
+                    @org.hibernate.annotations.Parameter(name = "initial_value", value = "1")
+            }
+    )
     private Long id;
     @Column(nullable = false, unique = true)
     private String customerId;
