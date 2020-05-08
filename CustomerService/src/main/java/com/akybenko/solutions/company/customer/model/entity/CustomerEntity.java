@@ -32,6 +32,12 @@ public class CustomerEntity implements Serializable {
     private String description;
     @Column(nullable = false, length = 120, unique = true)
     private String email;
-    @Column(nullable = false, length = 120)
-    private String address;
+    @AttributeOverrides({
+            @AttributeOverride(name = "street", column = @Column(name = "ADDRESS_STREET")),
+            @AttributeOverride(name = "city", column = @Column(name = "ADDRESS_CITY")),
+            @AttributeOverride(name = "region", column = @Column(name = "ADDRESS_REGION")),
+            @AttributeOverride(name = "country", column = @Column(name = "ADDRESS_COUNTRY")),
+            @AttributeOverride(name = "zipcode", column = @Column(name = "ADDRESS_ZIPCODE"))
+    })
+    private AddressEntity address;
 }

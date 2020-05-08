@@ -1,5 +1,6 @@
 package com.akybenko.solutions.company.customer.model.ui;
 
+import com.akybenko.solutions.company.customer.model.Address;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -14,6 +15,8 @@ public class CustomerResponseModel {
     private String description;
     @ApiModelProperty(notes = "Email of the customer", example = "johnsmith@example.com")
     private String email;
-    @ApiModelProperty(notes = "Address of the customer", example = "32106, Florida, San Angeles, 888 Constantine Ave, #54")
-    private String address;
+    @ApiModelProperty(
+            notes = "Address of the customer",
+            dataType = "com.akybenko.solutions.company.customer.model.Address")
+    private Address address;
 }

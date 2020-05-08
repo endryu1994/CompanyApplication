@@ -2,6 +2,7 @@ package com.akybenko.solutions.company.customer.service.impl;
 
 import com.akybenko.solutions.company.customer.exception.EntityNotFoundException;
 import com.akybenko.solutions.company.customer.feign.EmployeeServiceProxy;
+import com.akybenko.solutions.company.customer.model.entity.AddressEntity;
 import com.akybenko.solutions.company.customer.model.entity.CustomerEntity;
 import com.akybenko.solutions.company.customer.model.ui.CustomerRequestModel;
 import com.akybenko.solutions.company.customer.model.ui.CustomerResponseModel;
@@ -33,13 +34,11 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CompletableFuture<CustomerResponseModel> create(CustomerRequestModel model) {
         LOG.info("[CustomerServiceImpl#create] Object for save={}", model);
-        ModelMapper mapper = new ModelMapper();
-        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        CustomerEntity entity = mapper.map(model, CustomerEntity.class);
+        CustomerEntity entity = map(model, CustomerEntity.class);
         entity.setCustomerId(UUID.randomUUID().toString());
         LOG.info("[CustomerServiceImpl#create] Entity for save={}", entity);
-        CustomerEntity created = customerRepository.save(entity);
-        CustomerResponseModel response = mapper.map(created, CustomerResponseModel.class);
+        customerRepository.save(entity);
+        CustomerResponseModel response = map(entity, CustomerResponseModel.class);
         LOG.info("[CustomerServiceImpl#create] Response={}", response);
         return CompletableFuture.completedFuture(response);
     }
@@ -50,9 +49,7 @@ public class CustomerServiceImpl implements CustomerService {
         CustomerEntity entity = customerRepository.findByCustomerId(customerId).orElseThrow(
                 () -> new EntityNotFoundException(String.format("Customer with id = %s not found", customerId)));
         LOG.info("[CustomerServiceImpl#getByCustomerId] Entity from DB={}", entity);
-        ModelMapper mapper = new ModelMapper();
-        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        CustomerResponseModel response = mapper.map(entity, CustomerResponseModel.class);
+        CustomerResponseModel response = map(entity, CustomerResponseModel.class);
         LOG.info("[CustomerServiceImpl#getByCustomerId] Response={}", response);
         return CompletableFuture.completedFuture(response);
     }
@@ -66,12 +63,10 @@ public class CustomerServiceImpl implements CustomerService {
         entity.setName(model.getName());
         entity.setDescription(model.getDescription());
         entity.setEmail(model.getEmail());
-        entity.setAddress(model.getAddress());
+        entity.setAddress(map(model.getAddress(), AddressEntity.class));
         customerRepository.save(entity);
         LOG.info("[CustomerServiceImpl#updateByCustomerId] Updated entity={}", entity);
-        ModelMapper mapper = new ModelMapper();
-        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        CustomerResponseModel response = mapper.map(entity, CustomerResponseModel.class);
+        CustomerResponseModel response = map(entity, CustomerResponseModel.class);
         LOG.info("[CustomerServiceImpl#updateByCustomerId] Response={}", response);
         return CompletableFuture.completedFuture(response);
     }
@@ -90,5 +85,11 @@ public class CustomerServiceImpl implements CustomerService {
         boolean response = customerRepository.existsByCustomerId(customerId);
         LOG.info("[CustomerServiceImpl#existsByCustomerId] Response={}", response);
         return CompletableFuture.completedFuture(response);
+    }
+
+    private <S, D> D map(S object, Class<D> destinationClass) {
+        ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
+        return mapper.map(object, destinationClass);
     }
 }

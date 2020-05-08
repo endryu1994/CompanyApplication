@@ -1,8 +1,10 @@
 package com.akybenko.solutions.company.customer.model.ui;
 
+import com.akybenko.solutions.company.customer.model.Address;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -22,7 +24,11 @@ public class CustomerRequestModel {
     @NotNull(message = "Email cannot be null")
     @Email(message = "Invalid email address")
     private String email;
-    @ApiModelProperty(notes = "Address of the customer", example = "32106, Florida, San Angeles, 888 Constantine Ave, #54", required = true)
+    @ApiModelProperty(
+            notes = "Address of the customer",
+            dataType = "com.akybenko.solutions.company.customer.model.Address",
+            required = true)
+    @Valid
     @NotNull(message = "Address cannot be null")
-    private String address;
+    private Address address;
 }
